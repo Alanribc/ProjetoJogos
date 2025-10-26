@@ -1,26 +1,64 @@
 package br.mackenzie;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main implements ApplicationListener {
+    Texture personagemTexture;
+    Texture backgroundTexture;
+
+    SpriteBatch spriteBatch;
+    FitViewport viewport;
+
+    Player player;
+
     @Override
     public void create() {
-        // Prepare your application here.
+        backgroundTexture = new Texture("backgroundSprite.jpg");
+        personagemTexture = new Texture("exemploSprite.jpg");
+
+        spriteBatch = new SpriteBatch();
+        viewport = new FitViewport(8, 5);
+
+        player = new Player(personagemTexture, 3.5f, 0.5f, 1, 1, viewport);
+
     }
 
     @Override
     public void resize(int width, int height) {
-        // If the window is minimized on a desktop (LWJGL3) platform, width and height are 0, which causes problems.
-        // In that case, we don't resize anything, and wait for the window to be a normal size before updating.
-        if(width <= 0 || height <= 0) return;
-
-        // Resize your application here. The parameters represent the new window size.
+        viewport.update(width, height, true);
     }
 
     @Override
     public void render() {
-        // Draw your application here.
+        float dt = Gdx.graphics.getDeltaTime();
+
+        updateGameObjetcs(dt);
+
+        drawGameObjects();
+
+    }
+
+    private void drawGameObjects(){
+        ScreenUtils.clear(Color.BLACK);
+        viewport.apply();
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
+
+        spriteBatch.begin();
+        spriteBatch.draw(backgroundTexture, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        player.draw(spriteBatch);
+
+        spriteBatch.end();
+    }
+
+    private void updateGameObjetcs(float dt){
+        player.update(dt);
     }
 
     @Override
@@ -35,6 +73,8 @@ public class Main implements ApplicationListener {
 
     @Override
     public void dispose() {
-        // Destroy application's resources here.
+        spriteBatch.dispose();
+        personagemTexture.dispose();
+        backgroundTexture.dispose();
     }
 }
