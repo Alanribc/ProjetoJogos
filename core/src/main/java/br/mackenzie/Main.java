@@ -8,26 +8,44 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main implements ApplicationListener {
-    Texture personagemTexture;
-    Texture backgroundTexture;
 
+    Texture personagemTexture;
     SpriteBatch spriteBatch;
     FitViewport viewport;
-
     Player player;
+    MapManager mapManager;
 
     @Override
     public void create() {
-        backgroundTexture = new Texture("backgroundSprite.jpg");
         personagemTexture = new Texture("exemploSprite.jpg");
-
         spriteBatch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
 
-        player = new Player(personagemTexture, 3.5f, 0.5f, 1, 1, viewport);
+        // Carrega mapa
+        mapManager = new MapManager("mapas/fase1.tmx");
 
+        // Cria jogador
+        player = new Player(personagemTexture, 1, 1, 1, 1, viewport, mapManager);
+    }
+
+    @Override
+    public void render() {
+        float dt = Gdx.graphics.getDeltaTime();
+
+        player.update(dt);
+
+        ScreenUtils.clear(Color.BLACK);
+        viewport.apply();
+
+        // Renderiza mapa
+        mapManager.render(viewport);
+
+        // Renderiza jogador
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
+        spriteBatch.begin();
+        player.draw(spriteBatch);
+        spriteBatch.end();
     }
 
     @Override
@@ -36,45 +54,15 @@ public class Main implements ApplicationListener {
     }
 
     @Override
-    public void render() {
-        float dt = Gdx.graphics.getDeltaTime();
-
-        updateGameObjetcs(dt);
-
-        drawGameObjects();
-
-    }
-
-    private void drawGameObjects(){
-        ScreenUtils.clear(Color.BLACK);
-        viewport.apply();
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-
-        spriteBatch.begin();
-        spriteBatch.draw(backgroundTexture, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        player.draw(spriteBatch);
-
-        spriteBatch.end();
-    }
-
-    private void updateGameObjetcs(float dt){
-        player.update(dt);
-    }
-
-    @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
-
-    @Override
-    public void resume() {
-        // Invoked when your application is resumed after pause.
-    }
-
-    @Override
     public void dispose() {
         spriteBatch.dispose();
         personagemTexture.dispose();
-        backgroundTexture.dispose();
+        mapManager.dispose();
     }
+
+    @Override
+    public void pause() { }
+
+    @Override
+    public void resume() { }
 }

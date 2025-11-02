@@ -10,10 +10,10 @@ public abstract class GameObject {
     protected Sprite sprite;
     protected Rectangle bounds;
 
-    public GameObject(Texture texture, float x, float y, float width, float heigth) {
-        this.bounds = new Rectangle(x, y, width, heigth);
+    public GameObject(Texture texture, float x, float y, float width, float height) {
+        this.bounds = new Rectangle(x, y, width, height);
         this.sprite = new Sprite(texture);
-        this.sprite.setSize(width, heigth);
+        this.sprite.setSize(width, height);
         this.sprite.setPosition(x, y);
     }
 
@@ -31,8 +31,4 @@ public abstract class GameObject {
     public void setPosition(float x, float y){
         sprite.setPosition(x, y);
     }
-
-
-
-
 }
