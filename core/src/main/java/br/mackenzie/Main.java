@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Main extends ApplicationAdapter {
 
-    String palavra = "A";
+    String palavra = "B";
     SpriteBatch batch;
     Player player;
     MapRenderer mapRenderer;
